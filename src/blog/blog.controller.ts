@@ -4,7 +4,8 @@ import { BlogService } from './blog.service';
 import { QueryFailedError } from 'typeorm';
 import { ValidateBlogPipe } from 'src/pipes/validate.blog.pipe';
 import { Blog } from './entities/blog.entity';
-import { AuthGruad } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/guard/guard';
+
 
 @Controller('blog')
 export class BlogController {
@@ -27,7 +28,7 @@ export class BlogController {
 
     }
 
-    @UseGuards(AuthGruad)
+    @UseGuards(AuthGuard)
     @Get('all')
     @HttpCode(200)
     async getAll() {

@@ -12,7 +12,6 @@ export class BlogController {
 
     constructor(
         private blogService: BlogService,
-
     ) { }
 
     @Post()
@@ -25,7 +24,6 @@ export class BlogController {
             let typeErr = (err as QueryFailedError);
             throw new BadRequestException(typeErr.message);
         }
-
     }
 
     @UseGuards(AuthGuard)

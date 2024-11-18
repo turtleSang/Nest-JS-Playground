@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, ForbiddenException, HttpStatus, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ValidateUserPipe } from 'src/pipes/validate.user.pipe';
@@ -15,14 +15,10 @@ export class AuthController {
       let user = await this.authService.signUp(createUserDto)
       return `Người dùng ${user.username} đã tạo thành công`;
     } catch (error) {
-
-
       let err = error as TypeORMError;
       throw new BadRequestException(err.message);
     }
   }
-
-
   @Post('login')
   async signIn(@Body() userLogin: CreateUserDto) {
     try {
@@ -34,4 +30,17 @@ export class AuthController {
       throw new ForbiddenException(userErr.message)
     }
   }
+  @Post('logout/:token')
+  @HttpCode(200)
+  async signOut(@Param('token') token: string) {
+    try {
+      let resutl = await this.authService.signOut(token);
+      return resutl;
+    } catch (error) {
+      let err = error as Error
+      throw new BadRequestException(err.message)
+    }
+  }
+
+
 }

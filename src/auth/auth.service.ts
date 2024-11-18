@@ -2,9 +2,11 @@ import { BadRequestException, ForbiddenException, Injectable, NotAcceptableExcep
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository, TypeORMError } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
+import { BlackList } from './entities/blacklist.entity';
+import { Blog } from 'src/blog/entities/blog.entity';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +14,9 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private jwt: JwtService
+    @InjectRepository(BlackList)
+    private blackListRepository: Repository<BlackList>,
+    private jwt: JwtService,
   ) { }
 
   async signUp({ password, username }: CreateUserDto): Promise<User> {
@@ -37,4 +41,21 @@ export class AuthService {
       throw new Error('Sai Mật Khẩu')
     }
   }
+
+  async signOut(token: string) {
+    try {
+      let payload = await this.jwt.verify(token);
+      console.log(payload);
+
+      let createAt = new Date();
+      let expireAt = new Date(payload.exp * 1000);
+      await this.blackListRepository.save({ createAt, expireAt, token })
+      return 'Token đã bị hủy';
+    } catch (error) {
+      throw new Error('Không xác thực')
+    }
+  }
+
+
+
 }

@@ -4,13 +4,13 @@ import { BlogService } from './blog.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Blog } from './entities/blog.entity';
 import { User } from 'src/auth/entities/user.entity';
-import { APP_GUARD } from '@nestjs/core';
 import { JwTConfigs } from 'src/configs/jwt.module';
+import { BlackListModule } from 'src/auth/entities/blacklist.module';
 
 
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Blog, User]), JwTConfigs],
+    imports: [TypeOrmModule.forFeature([Blog, User]), JwTConfigs, BlackListModule],
     controllers: [BlogController],
     providers: [BlogService],
     exports: [BlogService, TypeOrmModule]

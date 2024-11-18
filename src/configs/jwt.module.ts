@@ -11,7 +11,7 @@ import { ConfigService } from "@nestjs/config";
             return {
                 global: true,
                 secret: configsService.get<string>('JWT_SECRET'),
-                signOptions: { algorithm: 'HS384' }
+                signOptions: { algorithm: 'HS384', expiresIn: '3d' },
             }
         }
 
